@@ -185,8 +185,9 @@ pytest -v
 ```bibtex
 @software{agenther2025,
   title   = {AgentHER: Hindsight Experience Replay for LLM Agents},
+  author  = {Ding, Liang},
   year    = {2025},
-  url     = {https://github.com/your-org/AgentHER},
+  url     = {https://github.com/alphadl/AgentHER},
 }
 ```
 
