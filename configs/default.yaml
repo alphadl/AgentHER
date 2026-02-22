@@ -1,0 +1,16 @@
+# AgentHER default configuration
+# Copy and modify this file for your use case.
+
+llm:
+  model: "gpt-4o"
+  base_url: null          # Set for OpenAI-compatible APIs (e.g., vLLM, Ollama)
+  api_key: null            # Or set OPENAI_API_KEY environment variable
+  temperature: 0.3
+
+pipeline:
+  use_llm_detector: false   # true = LLM judge, false = rule-based (faster/cheaper)
+  use_llm_extractor: true   # LLM gives better outcome extraction
+  output_format: "sft"      # sft | dpo | sharegpt
+  min_confidence: 0.5       # Minimum relabeling confidence to accept
+  relabel_max_attempts: 3   # Retry relabeling up to N times
+  output_dir: "outputs"
