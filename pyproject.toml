@@ -10,7 +10,7 @@ readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.9"
 authors = [
-    {name = "AgentHER Authors"},
+    {name = "Liang Ding"},
 ]
 keywords = ["llm", "agent", "hindsight-experience-replay", "data-augmentation", "reinforcement-learning"]
 classifiers = [
