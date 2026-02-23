@@ -1,6 +1,10 @@
 # AgentHER: Hindsight Experience Replay for LLM Agents
 
 <p align="center">
+  <img src="assets/logo.jpg" width="220" alt="AgentHER Logo" />
+</p>
+
+<p align="center">
   <em>Turning failed agent trajectories into high-quality training data</em>
 </p>
 
