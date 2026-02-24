@@ -117,7 +117,7 @@ agenther run data.json --model "llama3" --base-url "http://localhost:8000/v1"
 
 ```python
 from agenther import AgentHERPipeline, PipelineConfig
-from agenther.models import FailedTrajectory, AgentStep
+from agenther.models import FailedTrajectory, AgentStep, OutputFormat
 
 # Define a failed trajectory
 trajectory = FailedTrajectory(
@@ -135,7 +135,7 @@ trajectory = FailedTrajectory(
 )
 
 # Run the pipeline
-config = PipelineConfig(model="gpt-4o", output_format="sft")
+config = PipelineConfig(model="gpt-4o", output_format=OutputFormat.SFT)
 pipeline = AgentHERPipeline(config)
 result = pipeline.process(trajectory)
 

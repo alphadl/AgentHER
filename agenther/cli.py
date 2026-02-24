@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -77,7 +78,7 @@ def run(
     config = PipelineConfig(
         model=model,
         base_url=base_url,
-        api_key=api_key,
+        api_key=api_key or os.environ.get("OPENAI_API_KEY"),
         use_llm_detector=llm_detector,
         use_llm_extractor=llm_extractor,
         output_format=OutputFormat(output_format),

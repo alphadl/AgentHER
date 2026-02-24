@@ -48,9 +48,7 @@ class PromptRelabeler:
             user_prompt=user_prompt,
             output_schema=RelabeledData,
         )
-
-        result.trajectory_id = trajectory.trajectory_id
-        return result
+        return result.model_copy(update={"trajectory_id": trajectory.trajectory_id})
 
     def relabel_with_validation(
         self,
