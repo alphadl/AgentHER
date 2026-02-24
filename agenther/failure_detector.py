@@ -22,13 +22,17 @@ logger = logging.getLogger(__name__)
 
 _RULE_BASED_FAILURE_KEYWORDS: dict[FailureType, list[str]] = {
     FailureType.TOOL_ERROR: [
-        "error",
-        "exception",
+        "error:",
+        "exception:",
         "traceback",
         "timeout",
         "connection refused",
-        "404",
-        "500",
+        " 404 ",  # HTTP 404 (space-padded to avoid matching e.g. "4040")
+        "404 not",
+        " 500 ",  # HTTP 500 (avoid matching "500kg", "500ml", etc.)
+        "500 error",
+        " 503 ",
+        "503 service",
     ],
     FailureType.INCOMPLETE: [
         "i could not",
