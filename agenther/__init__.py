@@ -12,7 +12,7 @@ from agenther.models import (
     RelabeledData,
     ReplayOutcome,
 )
-from agenther.pipeline import AgentHERPipeline
+from agenther.pipeline import AgentHERPipeline, PipelineConfig
 
 __all__ = [
     "AgentStep",
@@ -20,4 +20,5 @@ __all__ = [
     "RelabeledData",
     "ReplayOutcome",
     "AgentHERPipeline",
+    "PipelineConfig",
 ]
