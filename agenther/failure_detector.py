@@ -11,6 +11,7 @@ Supports two modes:
 
 from __future__ import annotations
 
+import json
 import logging
 from collections.abc import Sequence
 
@@ -103,9 +104,18 @@ class FailureDetector:
         if self._llm is None:
             raise RuntimeError("LLM client required for LLM-based detection")
 
+        steps_render = [
+            {
+                "thought": s.thought,
+                "action_name": s.action_name,
+                "action_input": json.dumps(s.action_input, ensure_ascii=False),
+                "observation": s.observation,
+            }
+            for s in trajectory.steps
+        ]
         user_prompt = FAILURE_DETECTION_USER.render(
             original_prompt=trajectory.original_prompt,
-            steps=trajectory.steps,
+            steps=steps_render,
             num_steps=len(trajectory.steps),
             final_answer=trajectory.final_answer,
             failure_reason=trajectory.failure_reason,

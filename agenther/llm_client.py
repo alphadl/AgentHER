@@ -10,13 +10,27 @@ import json
 import logging
 from typing import TypeVar
 
-from openai import AsyncOpenAI, OpenAI
-from pydantic import BaseModel
+from openai import (
+    APIConnectionError,
+    APITimeoutError,
+    AsyncOpenAI,
+    InternalServerError,
+    OpenAI,
+    RateLimitError,
+)
+from pydantic import BaseModel, ValidationError
 from tenacity import (
     retry,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
+)
+
+_RETRY_EXCEPTIONS = (
+    APIConnectionError,
+    APITimeoutError,
+    RateLimitError,
+    InternalServerError,
 )
 
 logger = logging.getLogger(__name__)
@@ -45,7 +59,7 @@ class LLMClient:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(min=1, max=30),
-        retry=retry_if_exception_type((Exception,)),
+        retry=retry_if_exception_type(_RETRY_EXCEPTIONS),
         reraise=True,
     )
     def call(
@@ -112,7 +126,7 @@ class AsyncLLMClient:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(min=1, max=30),
-        retry=retry_if_exception_type((Exception,)),
+        retry=retry_if_exception_type(_RETRY_EXCEPTIONS),
         reraise=True,
     )
     async def call(
@@ -156,12 +170,13 @@ class AsyncLLMClient:
 def _parse_structured_response(raw: str, schema: type[T]) -> T:
     """Parse LLM text output into a Pydantic model with fallback extraction."""
     text = raw.strip()
+    last_error: str | None = None
 
     # Try direct parse first
     try:
         return schema.model_validate_json(text)
-    except Exception:
-        pass
+    except (ValueError, ValidationError) as e:
+        last_error = str(e)
 
     # Extract JSON from markdown code fences
     if "```" in text:
@@ -172,7 +187,8 @@ def _parse_structured_response(raw: str, schema: type[T]) -> T:
             if candidate.startswith("{"):
                 try:
                     return schema.model_validate_json(candidate)
-                except Exception:
+                except (ValueError, ValidationError) as e:
+                    last_error = str(e)
                     continue
 
     # Last resort: find the first {...} substring
@@ -181,9 +197,10 @@ def _parse_structured_response(raw: str, schema: type[T]) -> T:
     if start != -1 and end != -1 and end > start:
         try:
             return schema.model_validate_json(text[start : end + 1])
-        except Exception:
-            pass
+        except (ValueError, ValidationError) as e:
+            last_error = str(e)
 
+    err_detail = f"Last parse error: {last_error}" if last_error else ""
     raise ValueError(
-        f"Failed to parse LLM response into {schema.__name__}. Raw output:\n{text[:500]}"
+        f"Failed to parse LLM response into {schema.__name__}. {err_detail} Raw (first 500 chars):\n{text[:500]}"
     )

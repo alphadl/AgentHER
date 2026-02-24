@@ -10,6 +10,7 @@ Supports:
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 
@@ -66,9 +67,18 @@ class OutcomeExtractor:
         if self._llm is None:
             raise RuntimeError("LLM client required for LLM-based extraction")
 
+        steps_render = [
+            {
+                "thought": s.thought,
+                "action_name": s.action_name,
+                "action_input": json.dumps(s.action_input, ensure_ascii=False),
+                "observation": s.observation,
+            }
+            for s in trajectory.steps
+        ]
         user_prompt = OUTCOME_EXTRACTION_USER.render(
             original_prompt=trajectory.original_prompt,
-            steps=trajectory.steps,
+            steps=steps_render,
             final_answer=trajectory.final_answer,
         )
 
