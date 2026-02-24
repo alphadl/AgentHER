@@ -146,7 +146,7 @@ if result.success:
 
 ### Input Data Format
 
-Provide failed trajectories as JSON or JSONL:
+Provide failed trajectories as JSON or JSONL. `steps` must contain at least one step.
 
 ```json
 {

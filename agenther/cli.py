@@ -122,7 +122,8 @@ def validate(input_file: str, verbose: bool) -> None:
             f"[green]✓ Valid: {len(trajectories)} trajectories parsed successfully[/green]"
         )
         for t in trajectories[:3]:
-            console.print(f"  • {t.trajectory_id}: {t.original_prompt[:80]}...")
+            preview = t.original_prompt[:80] + "..." if len(t.original_prompt) > 80 else t.original_prompt
+            console.print(f"  • {t.trajectory_id}: {preview}")
     else:
         console.print("[red]✗ Invalid or empty input file[/red]")
         sys.exit(1)
