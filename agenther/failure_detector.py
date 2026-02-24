@@ -11,13 +11,13 @@ Supports two modes:
 
 from __future__ import annotations
 
-import json
 import logging
 from collections.abc import Sequence
 
+from agenther.constants import MIN_OBS_LEN_RECOVERABLE
 from agenther.llm_client import LLMClient
 from agenther.models import FailedTrajectory, FailureAnalysis, FailureType
-from agenther.prompts import FAILURE_DETECTION_SYSTEM, FAILURE_DETECTION_USER
+from agenther.prompts import FAILURE_DETECTION_SYSTEM, FAILURE_DETECTION_USER, steps_for_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ class FailureDetector:
             matched_type = matched_type or FailureType.WRONG_RESULT
 
         has_useful_observations = any(
-            len(step.observation.strip()) > 20 for step in trajectory.steps
+            len(step.observation.strip()) > MIN_OBS_LEN_RECOVERABLE for step in trajectory.steps
         )
 
         return FailureAnalysis(
@@ -104,18 +104,9 @@ class FailureDetector:
         if self._llm is None:
             raise RuntimeError("LLM client required for LLM-based detection")
 
-        steps_render = [
-            {
-                "thought": s.thought,
-                "action_name": s.action_name,
-                "action_input": json.dumps(s.action_input, ensure_ascii=False),
-                "observation": s.observation,
-            }
-            for s in trajectory.steps
-        ]
         user_prompt = FAILURE_DETECTION_USER.render(
             original_prompt=trajectory.original_prompt,
-            steps=steps_render,
+            steps=steps_for_prompt(trajectory.steps),
             num_steps=len(trajectory.steps),
             final_answer=trajectory.final_answer,
             failure_reason=trajectory.failure_reason,

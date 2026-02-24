@@ -10,13 +10,17 @@ Supports:
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 
+from agenther.constants import (
+    MAX_NUMERIC_VALUES_PER_STEP,
+    MIN_OBS_LEN_EXTRACT,
+    TRUNCATE_LEN,
+)
 from agenther.llm_client import LLMClient
 from agenther.models import FailedTrajectory, ReplayOutcome
-from agenther.prompts import OUTCOME_EXTRACTION_SYSTEM, OUTCOME_EXTRACTION_USER
+from agenther.prompts import OUTCOME_EXTRACTION_SYSTEM, OUTCOME_EXTRACTION_USER, steps_for_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +38,13 @@ class OutcomeExtractor:
 
         for i, step in enumerate(trajectory.steps, 1):
             obs = step.observation.strip()
-            if len(obs) < 15:
+            if len(obs) < MIN_OBS_LEN_EXTRACT:
                 continue
 
             if _looks_like_error(obs):
                 continue
 
-            summary = _truncate(obs, max_len=200)
+            summary = _truncate(obs, max_len=TRUNCATE_LEN)
             achievements.append(
                 f"Step {i} ({step.action_name}): {summary}"
             )
@@ -48,7 +52,7 @@ class OutcomeExtractor:
             numbers = re.findall(r"\$?[\d,]+\.?\d*", obs)
             if numbers:
                 key_observations.append(
-                    f"Numeric data found in step {i}: {', '.join(numbers[:5])}"
+                    f"Numeric data found in step {i}: {', '.join(numbers[:MAX_NUMERIC_VALUES_PER_STEP])}"
                 )
 
         if not achievements:
@@ -67,18 +71,9 @@ class OutcomeExtractor:
         if self._llm is None:
             raise RuntimeError("LLM client required for LLM-based extraction")
 
-        steps_render = [
-            {
-                "thought": s.thought,
-                "action_name": s.action_name,
-                "action_input": json.dumps(s.action_input, ensure_ascii=False),
-                "observation": s.observation,
-            }
-            for s in trajectory.steps
-        ]
         user_prompt = OUTCOME_EXTRACTION_USER.render(
             original_prompt=trajectory.original_prompt,
-            steps=steps_render,
+            steps=steps_for_prompt(trajectory.steps),
             final_answer=trajectory.final_answer,
         )
 

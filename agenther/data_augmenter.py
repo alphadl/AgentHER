@@ -12,6 +12,7 @@ import json
 import logging
 from pathlib import Path
 
+from agenther.constants import OBS_PREVIEW_LEN
 from agenther.models import (
     AugmentedSample,
     FailedTrajectory,
@@ -153,7 +154,11 @@ def _build_assistant_response(trajectory: FailedTrajectory) -> str:
         parts.append(f"Step {i}: {step.thought}")
         action_args = json.dumps(step.action_input, ensure_ascii=False)
         parts.append(f"  Action: {step.action_name}({action_args})")
-        obs_preview = step.observation[:300] if len(step.observation) > 300 else step.observation
+        obs_preview = (
+            step.observation[:OBS_PREVIEW_LEN]
+            if len(step.observation) > OBS_PREVIEW_LEN
+            else step.observation
+        )
         parts.append(f"  Result: {obs_preview}")
 
     if trajectory.final_answer:

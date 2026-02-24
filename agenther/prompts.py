@@ -6,7 +6,25 @@ to be robust against diverse agent trajectory formats and failure modes.
 
 from __future__ import annotations
 
+import json
+from collections.abc import Sequence
+
 from jinja2 import Template
+
+from agenther.models import AgentStep
+
+
+def steps_for_prompt(steps: Sequence[AgentStep]) -> list[dict[str, str]]:
+    """Convert trajectory steps to dicts with JSON-serialized action_input for template rendering."""
+    return [
+        {
+            "thought": s.thought,
+            "action_name": s.action_name,
+            "action_input": json.dumps(s.action_input, ensure_ascii=False),
+            "observation": s.observation,
+        }
+        for s in steps
+    ]
 
 # ---------------------------------------------------------------------------
 # Failure Detector
