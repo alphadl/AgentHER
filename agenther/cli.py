@@ -37,6 +37,7 @@ def main() -> None:
 @main.command()
 @click.argument("input_file", type=click.Path(exists=True))
 @click.option("-o", "--output", "output_path", default=None, help="Output JSONL path")
+@click.option("--output-dir", default="outputs", help="Default output directory when -o not set")
 @click.option("-m", "--model", default="gpt-4o", help="LLM model name")
 @click.option("--base-url", default=None, help="OpenAI-compatible API base URL")
 @click.option("--api-key", default=None, help="API key (or set OPENAI_API_KEY env var)")
@@ -56,6 +57,7 @@ def main() -> None:
 def run(
     input_file: str,
     output_path: str | None,
+    output_dir: str,
     model: str,
     base_url: str | None,
     api_key: str | None,
@@ -83,6 +85,7 @@ def run(
         use_llm_extractor=llm_extractor,
         output_format=OutputFormat(output_format),
         min_confidence=min_confidence,
+        output_dir=output_dir,
     )
 
     pipeline = AgentHERPipeline(config)
@@ -107,6 +110,8 @@ def run(
     )
     if saved_path:
         console.print(f"[bold]Output:[/bold] {saved_path}")
+    if success_count == 0:
+        sys.exit(1)
 
 
 @main.command()
@@ -130,22 +135,39 @@ def validate(input_file: str, verbose: bool) -> None:
 
 
 def _load_trajectories(path: str) -> list[FailedTrajectory]:
-    """Load trajectories from a JSON or JSONL file."""
+    """Load trajectories from a JSON or JSONL file.
+
+    Raises:
+        SystemExit: Exits with code 1 and prints the first invalid line (JSONL) or error (JSON).
+    """
     p = Path(path)
     content = p.read_text(encoding="utf-8").strip()
 
     trajectories: list[FailedTrajectory] = []
 
     if content.startswith("["):
-        raw_list = json.loads(content)
-        for item in raw_list:
-            trajectories.append(FailedTrajectory.model_validate(item))
+        try:
+            raw_list = json.loads(content)
+        except json.JSONDecodeError as e:
+            console.print(f"[red]Invalid JSON: {e}[/red]")
+            sys.exit(1)
+        for i, item in enumerate(raw_list):
+            try:
+                trajectories.append(FailedTrajectory.model_validate(item))
+            except Exception as e:
+                console.print(f"[red]Item {i + 1}: {e}[/red]")
+                sys.exit(1)
     else:
-        for line in content.splitlines():
+        for line_no, line in enumerate(content.splitlines(), 1):
             line = line.strip()
             if not line:
                 continue
-            trajectories.append(FailedTrajectory.model_validate_json(line))
+            try:
+                trajectories.append(FailedTrajectory.model_validate_json(line))
+            except Exception as e:
+                console.print(f"[red]Line {line_no}: {e}[/red]")
+                console.print(f"[dim]{line[:120]}{'...' if len(line) > 120 else ''}[/dim]")
+                sys.exit(1)
 
     return trajectories
 
