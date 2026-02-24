@@ -75,7 +75,12 @@ agenther/
 ### Installation
 
 ```bash
+# Recommended: use a virtual environment
+python -m venv .venv && source .venv/bin/activate  # Linux/macOS
+# or: .venv\Scripts\activate  # Windows
+
 pip install -e .
+# Optional, for running tests: pip install -e ".[dev]"
 ```
 
 ### Rule-Based Demo (No LLM Needed)
@@ -111,9 +116,8 @@ agenther run data.json --model "llama3" --base-url "http://localhost:8000/v1"
 ### Python API
 
 ```python
-from agenther import AgentHERPipeline
+from agenther import AgentHERPipeline, PipelineConfig
 from agenther.models import FailedTrajectory, AgentStep
-from agenther.pipeline import PipelineConfig
 
 # Define a failed trajectory
 trajectory = FailedTrajectory(
@@ -163,7 +167,7 @@ Provide failed trajectories as JSON or JSONL:
 
 ## Configuration
 
-See [`configs/default.yaml`](configs/default.yaml) for all options:
+CLI options override defaults; there is no config file loading. For reference, [`configs/default.yaml`](configs/default.yaml) documents the same options (use it as a template; pass values via CLI or `PipelineConfig` in code):
 
 ```yaml
 llm:
