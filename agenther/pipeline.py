@@ -80,7 +80,15 @@ class AgentHERPipeline:
         self.augmenter = DataAugmenter()
 
     def process(self, trajectory: FailedTrajectory) -> PipelineResult:
-        """Run a single trajectory through all four pipeline stages."""
+        """Run a single trajectory through all four pipeline stages.
+
+        Args:
+            trajectory: A single failed trajectory to relabel.
+
+        Returns:
+            PipelineResult with success=True and sample/outcome/relabeled when all
+            stages succeed; otherwise success=False and error/stage_reached set.
+        """
         tid = trajectory.trajectory_id
 
         # Stage 1: Failure Detection
@@ -89,6 +97,7 @@ class AgentHERPipeline:
                 trajectory, use_llm=self.config.use_llm_detector
             )
         except Exception as e:
+            logger.exception("Trajectory %s failed at failure_detection", tid)
             return PipelineResult(
                 trajectory_id=tid, stage_reached="failure_detection",
                 success=False, error=str(e),
@@ -114,6 +123,7 @@ class AgentHERPipeline:
                 trajectory, use_llm=self.config.use_llm_extractor
             )
         except Exception as e:
+            logger.exception("Trajectory %s failed at outcome_extraction", tid)
             return PipelineResult(
                 trajectory_id=tid, stage_reached="outcome_extraction",
                 success=False, error=str(e),
@@ -128,6 +138,7 @@ class AgentHERPipeline:
                 max_attempts=self.config.relabel_max_attempts,
             )
         except Exception as e:
+            logger.exception("Trajectory %s failed at prompt_relabeling", tid)
             return PipelineResult(
                 trajectory_id=tid, stage_reached="prompt_relabeling",
                 success=False, outcome=outcome, error=str(e),
@@ -146,6 +157,7 @@ class AgentHERPipeline:
                 trajectory, relabeled, output_format=self.config.output_format,
             )
         except Exception as e:
+            logger.exception("Trajectory %s failed at data_augmentation", tid)
             return PipelineResult(
                 trajectory_id=tid, stage_reached="data_augmentation",
                 success=False, outcome=outcome, relabeled=relabeled, error=str(e),
@@ -178,7 +190,17 @@ class AgentHERPipeline:
         trajectories: Sequence[FailedTrajectory],
         output_path: str | None = None,
     ) -> tuple[list[PipelineResult], Path | None]:
-        """Process trajectories and save successful samples to disk."""
+        """Process trajectories and save successful samples to disk.
+
+        Args:
+            trajectories: List of failed trajectories to relabel.
+            output_path: Optional path for output JSONL; if None, uses
+                config.output_dir / augmented_{format}.jsonl.
+
+        Returns:
+            (results, path): results for every trajectory; path is the saved file
+            path, or None if no trajectory succeeded.
+        """
         results = self.process_batch(trajectories)
 
         samples = [r.sample for r in results if r.success and r.sample is not None]
