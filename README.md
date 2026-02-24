@@ -188,6 +188,16 @@ pip install -e ".[dev]"
 pytest -v
 ```
 
+## Limitations
+
+- **Batch processing is sequential** — no parallelism; large batches may be slow.
+- **No config file** — options are passed via CLI or `PipelineConfig` in code.
+- **Rule-based stages are heuristics** — for best quality, use LLM for detector/extractor when cost allows.
+
+## Contributing
+
+Issues and pull requests are welcome on [GitHub](https://github.com/alphadl/AgentHER).
+
 ## Citation
 
 ```bibtex
