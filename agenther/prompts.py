@@ -125,35 +125,3 @@ PROMPT_RELABEL_USER = Template("""\
 {{ num_steps }}
 
 Write a new user prompt and provide your rationale.""")
-
-# ---------------------------------------------------------------------------
-# Validation
-# ---------------------------------------------------------------------------
-
-VALIDATION_SYSTEM = """\
-You are a quality assurance expert for LLM training data. Given a hindsight prompt \
-and the corresponding agent trajectory, verify that the trajectory genuinely \
-satisfies the hindsight prompt.
-
-Check for:
-1. Does the trajectory actually achieve what the hindsight prompt asks?
-2. Are there any contradictions between the prompt and the observations?
-3. Is the hindsight prompt realistic and not overly trivial?
-
-Respond with a pass/fail judgment and a quality score from 0.0 to 1.0."""
-
-VALIDATION_USER = Template("""\
-## Hindsight Prompt
-{{ hindsight_prompt }}
-
-## Agent Trajectory
-{% for step in steps %}
-### Step {{ loop.index }}
-- **Action:** {{ step.action_name }}({{ step.action_input }})
-- **Observation:** {{ step.observation }}
-{% endfor %}
-
-## Final Answer
-{{ final_answer }}
-
-Validate whether this trajectory satisfies the hindsight prompt.""")
