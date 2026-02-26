@@ -60,8 +60,9 @@ The agent's work was thorough and correct — it just didn't meet an arbitrary p
 ```
 agenther/
 ├── models.py             # Pydantic data models (AgentStep, FailedTrajectory, etc.)
+├── constants.py          # Shared thresholds (min observation length, truncation, etc.)
 ├── llm_client.py         # OpenAI-compatible LLM client with structured output
-├── prompts.py            # Jinja2 prompt templates for each pipeline stage
+├── prompts.py            # Jinja2 prompt templates + steps_for_prompt()
 ├── failure_detector.py   # Stage 1: rule-based + LLM failure classification
 ├── outcome_extractor.py  # Stage 2: extract actual achievements
 ├── prompt_relabeler.py   # Stage 3: reverse-engineer hindsight prompts
@@ -197,6 +198,12 @@ pytest -v
 ## Contributing
 
 Issues and pull requests are welcome on [GitHub](https://github.com/alphadl/AgentHER).
+
+## Related projects
+
+- **[AdaRubrics](https://github.com/alphadl/AdaRubrics)** — Adaptive dynamic rubric evaluator for agent trajectories: generates task-specific dimensions and scores runs for filtering/RLHF. Use AdaRubric to score or filter relabeled data from AgentHER.
+- **[AgentSynth](https://github.com/alphadl/AgentSynth)** — Synthetic agent data pipeline (forward + back-translation, execution-based reject sampling). AgentHER can relabel failed or low-quality synthetic runs into valid SFT/DPO data.
+- **[trajectory_tokenization](https://github.com/alphadl/trajectory_tokenization)** — ReAct with trajectory tokenization: compresses long (Thought, Action, Observation) history so long-horizon runs fit in context. Addresses context length; AgentHER addresses *reuse* of failed trajectories.
 
 ## Citation
 
