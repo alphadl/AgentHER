@@ -13,6 +13,7 @@
   <a href="#how-it-works">How It Works</a> •
   <a href="#architecture">Architecture</a> •
   <a href="#usage">Usage</a> •
+  <a href="#related-projects">Related projects</a> •
   <a href="#citation">Citation</a>
 </p>
 
@@ -199,7 +200,7 @@ pytest -v
 
 Issues and pull requests are welcome on [GitHub](https://github.com/alphadl/AgentHER).
 
-## Related projects
+## Related projects {#related-projects}
 
 - **[AdaRubrics](https://github.com/alphadl/AdaRubrics)** — Adaptive dynamic rubric evaluator for agent trajectories: generates task-specific dimensions and scores runs for filtering/RLHF. Use it to score or filter relabeled data from AgentHER.
 - **[AgentSynth](https://github.com/alphadl/AgentSynth)** — Synthetic agent data pipeline (forward + back-translation, execution-based reject sampling). AgentHER can relabel failed or low-quality synthetic runs into valid SFT/DPO data.
