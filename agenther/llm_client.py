@@ -48,12 +48,10 @@ class LLMClient:
         api_key: str | None = None,
         temperature: float = 0.3,
         max_tokens: int = 2048,
-        max_retries: int = 3,
     ) -> None:
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self.max_retries = max_retries
         self._client = OpenAI(base_url=base_url, api_key=api_key)
 
     @retry(
@@ -75,7 +73,7 @@ class LLMClient:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=temperature or self.temperature,
+            temperature=temperature if temperature is not None else self.temperature,
             max_tokens=self.max_tokens,
         )
         content = response.choices[0].message.content
@@ -141,7 +139,7 @@ class AsyncLLMClient:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=temperature or self.temperature,
+            temperature=temperature if temperature is not None else self.temperature,
             max_tokens=self.max_tokens,
         )
         content = response.choices[0].message.content
@@ -202,5 +200,6 @@ def _parse_structured_response(raw: str, schema: type[T]) -> T:
 
     err_detail = f"Last parse error: {last_error}" if last_error else ""
     raise ValueError(
-        f"Failed to parse LLM response into {schema.__name__}. {err_detail} Raw (first 500 chars):\n{text[:500]}"
+        f"Failed to parse LLM response into {schema.__name__}. "
+        f"{err_detail} Raw (first 500 chars):\n{text[:500]}"
     )

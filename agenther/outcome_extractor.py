@@ -52,7 +52,9 @@ class OutcomeExtractor:
             numbers = re.findall(r"\$?[\d,]+\.?\d*", obs)
             if numbers:
                 key_observations.append(
-                    f"Numeric data found in step {i}: {', '.join(numbers[:MAX_NUMERIC_VALUES_PER_STEP])}"
+                    "Numeric data found in step {}: {}".format(
+                        i, ", ".join(numbers[:MAX_NUMERIC_VALUES_PER_STEP])
+                    )
                 )
 
         if not achievements:
@@ -98,7 +100,7 @@ def _looks_like_error(text: str) -> bool:
     return any(sig in lower for sig in error_signals)
 
 
-def _truncate(text: str, max_len: int = 200) -> str:
+def _truncate(text: str, max_len: int = TRUNCATE_LEN) -> str:
     if len(text) <= max_len:
         return text
     return text[:max_len].rsplit(" ", 1)[0] + "..."

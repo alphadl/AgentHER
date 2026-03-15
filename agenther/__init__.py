@@ -8,7 +8,9 @@ __version__ = "0.1.0"
 
 from agenther.models import (
     AgentStep,
+    AugmentedSample,
     FailedTrajectory,
+    FailureAnalysis,
     FailureType,
     OutputFormat,
     RelabeledData,
@@ -18,7 +20,9 @@ from agenther.pipeline import AgentHERPipeline, PipelineConfig
 
 __all__ = [
     "AgentStep",
+    "AugmentedSample",
     "FailedTrajectory",
+    "FailureAnalysis",
     "FailureType",
     "OutputFormat",
     "RelabeledData",
