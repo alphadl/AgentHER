@@ -9,6 +9,19 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/alphadl/AgentHER/actions/workflows/tests.yml">
+    <img src="https://github.com/alphadl/AgentHER/actions/workflows/tests.yml/badge.svg" alt="tests" />
+  </a>
+  <a href="https://pypi.org/project/agenther/">
+    <img src="https://img.shields.io/pypi/v/agenther" alt="PyPI" />
+  </a>
+  <img src="https://img.shields.io/badge/python-3.9%2B-blue" alt="Python 3.9+" />
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" />
+  </a>
+</p>
+
+<p align="center">
   <a href="#quickstart">Quickstart</a> •
   <a href="#how-it-works">How It Works</a> •
   <a href="#architecture">Architecture</a> •
