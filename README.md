@@ -9,15 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/agenther/">
-    <img src="https://img.shields.io/pypi/v/agenther" alt="PyPI" />
-  </a>
-  <a href="https://pypi.org/project/agenther/">
-    <img src="https://img.shields.io/pypi/dm/agenther" alt="PyPI downloads" />
-  </a>
   <img src="https://img.shields.io/badge/python-3.9%2B-blue" alt="Python 3.9+" />
   <a href="https://github.com/astral-sh/ruff">
-    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff" />
+    <img src="https://img.shields.io/badge/code%20style-ruff-000000.svg" alt="Ruff" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" />
