@@ -93,3 +93,6 @@ class TestPublicAPIExports:
 
     def test_failure_analysis_importable(self) -> None:
         from agenther import FailureAnalysis  # noqa: F401
+
+    def test_pipeline_result_importable(self) -> None:
+        from agenther import PipelineResult  # noqa: F401

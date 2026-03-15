@@ -49,6 +49,9 @@ def main() -> None:
     help="Output data format",
 )
 @click.option("--min-confidence", default=0.5, type=float, help="Minimum relabeling confidence")
+@click.option(
+    "--temperature", default=0.3, type=float, help="LLM sampling temperature (0.0=greedy)"
+)
 @click.option("--llm-detector/--rule-detector", default=False, help="Use LLM for failure detection")
 @click.option(
     "--llm-extractor/--rule-extractor", default=True, help="Use LLM for outcome extraction"
@@ -63,6 +66,7 @@ def run(
     api_key: str | None,
     output_format: str,
     min_confidence: float,
+    temperature: float,
     llm_detector: bool,
     llm_extractor: bool,
     verbose: bool,
@@ -81,6 +85,7 @@ def run(
         model=model,
         base_url=base_url,
         api_key=api_key or os.environ.get("OPENAI_API_KEY"),
+        temperature=temperature,
         use_llm_detector=llm_detector,
         use_llm_extractor=llm_extractor,
         output_format=OutputFormat(output_format),

@@ -37,3 +37,4 @@ class TestPipelineConfig:
         assert config.model == "gpt-4o"
         assert config.min_confidence == 0.5
         assert config.use_llm_detector is False
+        assert config.temperature == 0.3

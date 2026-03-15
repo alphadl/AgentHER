@@ -16,17 +16,18 @@ from agenther.models import (
     RelabeledData,
     ReplayOutcome,
 )
-from agenther.pipeline import AgentHERPipeline, PipelineConfig
+from agenther.pipeline import AgentHERPipeline, PipelineConfig, PipelineResult
 
 __all__ = [
+    "AgentHERPipeline",
     "AgentStep",
     "AugmentedSample",
     "FailedTrajectory",
     "FailureAnalysis",
     "FailureType",
     "OutputFormat",
+    "PipelineConfig",
+    "PipelineResult",
     "RelabeledData",
     "ReplayOutcome",
-    "AgentHERPipeline",
-    "PipelineConfig",
 ]
