@@ -143,3 +143,35 @@ PROMPT_RELABEL_USER = Template("""\
 {{ num_steps }}
 
 Write a new user prompt and provide your rationale.""")
+
+# ---------------------------------------------------------------------------
+# Second Judge (multi-judge verification, temperature=0)
+# ---------------------------------------------------------------------------
+
+SECOND_JUDGE_SYSTEM = """\
+You are an independent trajectory verifier. Given a proposed hindsight prompt and an agent \
+trajectory, decide whether the trajectory is a SUCCESSFUL execution of that prompt.
+
+Evaluation criteria:
+1. Every factual claim or constraint in the prompt is supported by actual observations
+2. The trajectory reaches a conclusion that satisfies all of the prompt's requirements
+3. No requirement in the prompt is contradicted by any observation
+
+Be strict: assign high confidence (≥ 0.5) only if ALL requirements are clearly met. \
+If is_valid is False, briefly explain which requirement is unmet."""
+
+SECOND_JUDGE_USER = Template("""\
+## Proposed Hindsight Prompt
+{{ hindsight_prompt }}
+
+## Agent Trajectory ({{ num_steps }} steps)
+{% for step in steps %}
+### Step {{ loop.index }}
+- **Action:** {{ step.action_name }}({{ step.action_input }})
+- **Observation:** {{ step.observation }}
+{% endfor %}
+
+## Final Answer
+{{ final_answer }}
+
+Does this trajectory successfully satisfy the proposed prompt? Respond with JSON.""")

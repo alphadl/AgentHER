@@ -93,6 +93,21 @@ class FailureAnalysis(BaseModel):
     )
 
 
+class SecondJudgeVerdict(BaseModel):
+    """Verification result from the independent second-judge LLM call (Algorithm 1, Stage 3)."""
+
+    is_valid: bool = Field(
+        ..., description="Whether the trajectory satisfies the hindsight prompt"
+    )
+    confidence: float = Field(
+        default=0.0, ge=0.0, le=1.0, description="Second-judge confidence score c_2"
+    )
+    rejection_reason: str = Field(
+        default="",
+        description="Why the trajectory fails to satisfy the prompt, if is_valid=False",
+    )
+
+
 class OutputFormat(str, Enum):
     """Supported output formats for augmented training data."""
 
@@ -107,6 +122,10 @@ class AugmentedSample(BaseModel):
     source_trajectory_id: str
     format: OutputFormat
     hindsight_prompt: str
+    weight: float = Field(
+        default=1.0, ge=0.0, le=1.0,
+        description="Severity weight w from Stage 1 for downstream loss/margin scaling",
+    )
     chosen: list[dict[str, str]] = Field(
         default_factory=list, description="Chosen conversation turns (for SFT/DPO)"
     )

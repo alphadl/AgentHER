@@ -190,8 +190,9 @@ pipeline:
   use_llm_detector: false    # Rule-based is faster and free
   use_llm_extractor: true    # LLM gives better outcome extraction
   output_format: "sft"       # sft | dpo | sharegpt
-  min_confidence: 0.5        # Quality threshold for relabeling
-  relabel_max_attempts: 3    # Retry relabeling up to N times
+  min_confidence: 0.5        # θ: quality threshold for relabeling
+  severity_threshold: 0.3    # δ: discard trajectories with severity weight below this
+  relabel_max_attempts: 3    # K: retry relabeling up to N times
   output_dir: "outputs"      # Default output directory
 ```
 

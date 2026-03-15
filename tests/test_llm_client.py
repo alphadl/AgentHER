@@ -96,3 +96,6 @@ class TestPublicAPIExports:
 
     def test_pipeline_result_importable(self) -> None:
         from agenther import PipelineResult  # noqa: F401
+
+    def test_second_judge_verdict_importable(self) -> None:
+        from agenther import SecondJudgeVerdict  # noqa: F401

@@ -15,6 +15,7 @@ from agenther.models import (
     OutputFormat,
     RelabeledData,
     ReplayOutcome,
+    SecondJudgeVerdict,
 )
 from agenther.pipeline import AgentHERPipeline, PipelineConfig, PipelineResult
 
@@ -30,4 +31,5 @@ __all__ = [
     "PipelineResult",
     "RelabeledData",
     "ReplayOutcome",
+    "SecondJudgeVerdict",
 ]

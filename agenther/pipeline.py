@@ -44,6 +44,7 @@ class PipelineConfig:
 
     min_confidence: float = 0.5
     relabel_max_attempts: int = 3
+    severity_threshold: float = 0.3  # δ: discard if severity weight w < this
 
     output_dir: str = "outputs"
 
@@ -117,6 +118,20 @@ class AgentHERPipeline:
                 success=False, error=f"Irrecoverable failure: {analysis.failure_type}",
             )
 
+        if analysis.severity < self.config.severity_threshold:
+            logger.info(
+                "Trajectory %s severity %.2f below threshold %.2f — skipping",
+                tid, analysis.severity, self.config.severity_threshold,
+            )
+            return PipelineResult(
+                trajectory_id=tid, stage_reached="failure_detection",
+                success=False,
+                error=(
+                    f"Severity {analysis.severity:.2f} below threshold "
+                    f"{self.config.severity_threshold} (δ)"
+                ),
+            )
+
         # Stage 2: Outcome Extraction
         try:
             outcome = self.extractor.extract(
@@ -154,7 +169,9 @@ class AgentHERPipeline:
         # Stage 4: Data Augmentation
         try:
             sample = self.augmenter.augment(
-                trajectory, relabeled, output_format=self.config.output_format,
+                trajectory, relabeled,
+                output_format=self.config.output_format,
+                severity_weight=analysis.severity,
             )
         except Exception as e:
             logger.exception("Trajectory %s failed at data_augmentation", tid)

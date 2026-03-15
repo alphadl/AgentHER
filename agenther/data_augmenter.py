@@ -30,11 +30,13 @@ class DataAugmenter:
         self,
         trajectory: FailedTrajectory,
         relabeled: RelabeledData,
+        severity_weight: float = 1.0,
     ) -> AugmentedSample:
         """Create a supervised fine-tuning sample.
 
         The conversation uses the hindsight prompt as user input and
         reconstructs the agent's reasoning chain as the assistant response.
+        The severity weight w scales the SFT loss downstream.
         """
         assistant_content = _build_assistant_response(trajectory)
 
@@ -42,6 +44,7 @@ class DataAugmenter:
             source_trajectory_id=trajectory.trajectory_id,
             format=OutputFormat.SFT,
             hindsight_prompt=relabeled.hindsight_prompt,
+            weight=severity_weight,
             chosen=[
                 {"role": "user", "content": relabeled.hindsight_prompt},
                 {"role": "assistant", "content": assistant_content},
@@ -57,11 +60,13 @@ class DataAugmenter:
         self,
         trajectory: FailedTrajectory,
         relabeled: RelabeledData,
+        severity_weight: float = 1.0,
     ) -> AugmentedSample:
         """Create a DPO training pair.
 
         - Chosen: hindsight prompt -> trajectory (now a "success")
         - Rejected: original prompt -> same trajectory (a known "failure")
+        The severity weight w scales the DPO margin loss downstream.
         """
         assistant_content = _build_assistant_response(trajectory)
 
@@ -69,6 +74,7 @@ class DataAugmenter:
             source_trajectory_id=trajectory.trajectory_id,
             format=OutputFormat.DPO,
             hindsight_prompt=relabeled.hindsight_prompt,
+            weight=severity_weight,
             chosen=[
                 {"role": "user", "content": relabeled.hindsight_prompt},
                 {"role": "assistant", "content": assistant_content},
@@ -88,6 +94,7 @@ class DataAugmenter:
         self,
         trajectory: FailedTrajectory,
         relabeled: RelabeledData,
+        severity_weight: float = 1.0,
     ) -> AugmentedSample:
         """Create a ShareGPT-style multi-turn conversation."""
         turns: list[dict[str, str]] = [
@@ -108,6 +115,7 @@ class DataAugmenter:
             source_trajectory_id=trajectory.trajectory_id,
             format=OutputFormat.SHAREGPT,
             hindsight_prompt=relabeled.hindsight_prompt,
+            weight=severity_weight,
             chosen=turns,
             metadata={
                 "original_prompt": trajectory.original_prompt,
@@ -120,6 +128,7 @@ class DataAugmenter:
         trajectory: FailedTrajectory,
         relabeled: RelabeledData,
         output_format: OutputFormat = OutputFormat.SFT,
+        severity_weight: float = 1.0,
     ) -> AugmentedSample:
         """Route to the appropriate format builder."""
         builders = {
@@ -127,7 +136,7 @@ class DataAugmenter:
             OutputFormat.DPO: self.to_dpo,
             OutputFormat.SHAREGPT: self.to_sharegpt,
         }
-        return builders[output_format](trajectory, relabeled)
+        return builders[output_format](trajectory, relabeled, severity_weight)
 
     @staticmethod
     def save_samples(

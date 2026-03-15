@@ -83,6 +83,38 @@ class TestFormatRouting:
             assert sample.format == fmt
 
 
+class TestSeverityWeight:
+    def test_weight_stored_in_sample(
+        self,
+        sample_trajectory: FailedTrajectory,
+        sample_relabeled: RelabeledData,
+    ) -> None:
+        augmenter = DataAugmenter()
+        sample = augmenter.to_sft(sample_trajectory, sample_relabeled, severity_weight=0.7)
+        assert sample.weight == 0.7
+
+    def test_default_weight_is_one(
+        self,
+        sample_trajectory: FailedTrajectory,
+        sample_relabeled: RelabeledData,
+    ) -> None:
+        augmenter = DataAugmenter()
+        sample = augmenter.augment(sample_trajectory, sample_relabeled)
+        assert sample.weight == 1.0
+
+    def test_weight_propagates_through_augment(
+        self,
+        sample_trajectory: FailedTrajectory,
+        sample_relabeled: RelabeledData,
+    ) -> None:
+        augmenter = DataAugmenter()
+        for fmt in OutputFormat:
+            sample = augmenter.augment(
+                sample_trajectory, sample_relabeled, fmt, severity_weight=0.5
+            )
+            assert sample.weight == 0.5
+
+
 class TestSaveSamples:
     def test_saves_jsonl(
         self,

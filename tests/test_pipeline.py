@@ -38,3 +38,4 @@ class TestPipelineConfig:
         assert config.min_confidence == 0.5
         assert config.use_llm_detector is False
         assert config.temperature == 0.3
+        assert config.severity_threshold == 0.3

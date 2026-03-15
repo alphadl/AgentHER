@@ -50,6 +50,10 @@ def main() -> None:
 )
 @click.option("--min-confidence", default=0.5, type=float, help="Minimum relabeling confidence")
 @click.option(
+    "--severity-threshold", default=0.3, type=float,
+    help="Discard trajectories with severity weight below this (δ, default 0.3)",
+)
+@click.option(
     "--temperature", default=0.3, type=float, help="LLM sampling temperature (0.0=greedy)"
 )
 @click.option("--llm-detector/--rule-detector", default=False, help="Use LLM for failure detection")
@@ -66,6 +70,7 @@ def run(
     api_key: str | None,
     output_format: str,
     min_confidence: float,
+    severity_threshold: float,
     temperature: float,
     llm_detector: bool,
     llm_extractor: bool,
@@ -90,6 +95,7 @@ def run(
         use_llm_extractor=llm_extractor,
         output_format=OutputFormat(output_format),
         min_confidence=min_confidence,
+        severity_threshold=severity_threshold,
         output_dir=output_dir,
     )
 
