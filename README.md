@@ -191,6 +191,8 @@ pipeline:
   use_llm_extractor: true    # LLM gives better outcome extraction
   output_format: "sft"       # sft | dpo | sharegpt
   min_confidence: 0.5        # Quality threshold for relabeling
+  relabel_max_attempts: 3    # Retry relabeling up to N times
+  output_dir: "outputs"      # Default output directory
 ```
 
 ## Running Tests
