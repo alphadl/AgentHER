@@ -55,12 +55,12 @@ The agent's work was thorough and correct — it just didn't meet an arbitrary p
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐     ┌────────────────┐
-│  1. Failure      │────▸│  2. Outcome      │────▸│  3. Prompt      │────▸│  4. Data       │
-│     Detector     │     │     Extractor    │     │     Relabeler   │     │     Augmenter  │
-│                  │     │                  │     │                 │     │                │
-│  Is this really  │     │  What did the    │     │  Reverse-       │     │  Package as    │
-│  a failure?      │     │  agent achieve?  │     │  engineer a new │     │  SFT / DPO /   │
-│  Recoverable?    │     │                  │     │  matching prompt│     │  ShareGPT      │
+│  1. Failure     │────▸│  2. Outcome      │────▸│  3. Prompt      │────▸│  4. Data       │
+│     Detector    │     │     Extractor    │     │     Relabeler   │     │     Augmenter  │
+│                 │     │                  │     │                 │     │                │
+│  Is this really │     │  What did the    │     │  Reverse-       │     │  Package as    │
+│  a failure?     │     │  agent achieve?  │     │  engineer a new │     │  SFT / DPO /   │
+│  Recoverable?   │     │                  │     │  matching prompt│     │  ShareGPT      │
 └─────────────────┘     └──────────────────┘     └─────────────────┘     └────────────────┘
 ```
 
