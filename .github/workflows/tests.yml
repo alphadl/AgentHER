@@ -31,4 +31,4 @@ jobs:
         run: ruff check agenther/ tests/
 
       - name: Test
-        run: python -m pytest -v
+        run: python -m pytest tests/ -v --tb=short
