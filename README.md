@@ -9,9 +9,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alphadl/AgentHER/actions/workflows/tests.yml">
-    <img src="https://github.com/alphadl/AgentHER/actions/workflows/tests.yml/badge.svg" alt="tests" />
-  </a>
   <a href="https://pypi.org/project/agenther/">
     <img src="https://img.shields.io/pypi/v/agenther" alt="PyPI" />
   </a>
