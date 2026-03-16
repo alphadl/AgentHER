@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alphadl/AgentHER/raw/main/assets/AgentHER.pdf">📄 Paper (PDF)</a> •
+  <a href="https://github.com/alphadl/AgentHER/blob/main/assets/AgentHER.pdf">📄 Paper (PDF)</a> •
   <a href="#quickstart">Quickstart</a> •
   <a href="#how-it-works">How It Works</a> •
   <a href="#architecture">Architecture</a> •
@@ -222,7 +222,7 @@ Issues and pull requests are welcome on [GitHub](https://github.com/alphadl/Agen
 
 ## Paper
 
-The full paper is available here: **[AgentHER: Hindsight Experience Replay for LLM Agent Trajectory Relabeling](https://github.com/alphadl/AgentHER/raw/main/assets/AgentHER.pdf)** (PDF).
+The full paper is available here: **[AgentHER: Hindsight Experience Replay for LLM Agent Trajectory Relabeling](https://github.com/alphadl/AgentHER/blob/main/assets/AgentHER.pdf)** (PDF).
 
 ## Citation
 
