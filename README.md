@@ -227,10 +227,10 @@ The full paper is available here: **[AgentHER: Hindsight Experience Replay for L
 ## Citation
 
 ```bibtex
-@software{agenther2025,
+@software{agenther2026,
   title   = {AgentHER: Hindsight Experience Replay for LLM Agents},
   author  = {Ding, Liang},
-  year    = {2025},
+  year    = {2026},
   url     = {https://github.com/alphadl/AgentHER},
 }
 ```
